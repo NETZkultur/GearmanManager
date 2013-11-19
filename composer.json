@@ -1,0 +1,14 @@
+{
+    "name": "NETZkultur/GearmanManager",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Sven Mulholland",
+            "email": "mulholland@netzkultur.de"
+        }
+    ],
+    "require": {
+        "pilotftzi/net-gearman": "dev-master"
+    },
+    "bin": ["pear-manager.php", "pecl-manager.php", "install/install.sh","install/deb.sh","install/rhel.sh"]
+}
