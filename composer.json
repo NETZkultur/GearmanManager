@@ -10,5 +10,10 @@
     "require": {
         "pilotftzi/net-gearman": "dev-master"
     },
-    "bin": ["pear-manager.php", "pecl-manager.php", "install/install.sh","install/deb.sh","install/rhel.sh"]
+    "bin": ["pear-manager.php", "pecl-manager.php", "install/install.sh","install/deb.sh","install/rhel.sh"],
+    "autoload": {
+        "psr-0": {
+            "": "./"
+        }
+    }
 }
