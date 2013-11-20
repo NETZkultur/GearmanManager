@@ -49,7 +49,7 @@ class GearmanPearManager extends GearmanManager {
 		 */
 		define('NET_GEARMAN_JOB_PATH', $this->worker_dir);
 
-		$worker = new Net_Gearman_Worker($this->servers);
+		$worker = new \Net\Gearman\Worker($this->servers);
 
 		foreach ($worker_list as $w) {
 			$timeout = (isset($timeouts[$w]) ? $timeouts[$w] : null);
@@ -61,9 +61,9 @@ class GearmanPearManager extends GearmanManager {
 			$worker->addAbility($w, $timeout);
 		}
 
-		$worker->attachCallback(array($this, 'job_start'), Net_Gearman_Worker::JOB_START);
-		$worker->attachCallback(array($this, 'job_complete'), Net_Gearman_Worker::JOB_COMPLETE);
-		$worker->attachCallback(array($this, 'job_fail'), Net_Gearman_Worker::JOB_FAIL);
+		$worker->attachCallback(array($this, 'job_start'), \Net\Gearman\Worker::JOB_START);
+		$worker->attachCallback(array($this, 'job_complete'), \Net\Gearman\Worker::JOB_COMPLETE);
+		$worker->attachCallback(array($this, 'job_fail'), \Net\Gearman\Worker::JOB_FAIL);
 
 		$this->start_time = time();
 		$this->job_execution_count++;
@@ -185,19 +185,6 @@ class GearmanPearManager extends GearmanManager {
 	 * Validates the PECL compatible worker files/functions
 	 */
 	protected function validate_lib_workers() {
-
-		/**
-		 * Yes, we include these twice because this function is called
-		 * by a different process than the other location where these
-		 * are included.
-		 */
-		if (!class_exists("Net_Gearman_Job_Common")) {
-			require "Net/Gearman/Job/Common.php";
-		}
-
-		if (!class_exists("Net_Gearman_Job")) {
-			require "Net/Gearman/Job.php";
-		}
 
 		/**
 		 * Validate functions
