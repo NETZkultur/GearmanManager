@@ -51,9 +51,9 @@ class ComposerManager extends GearmanManager {
 
 		$start = time();
 
-		$thisWorker->attachCallback(array($this, 'job_start'), Net_Gearman_Worker::JOB_START);
-		$thisWorker->attachCallback(array($this, 'job_complete'), Net_Gearman_Worker::JOB_COMPLETE);
-		$thisWorker->attachCallback(array($this, 'job_fail'), Net_Gearman_Worker::JOB_FAIL);
+		$thisWorker->attachCallback(array($this, 'job_start'), \Net\Gearman\Worker::JOB_START);
+		$thisWorker->attachCallback(array($this, 'job_complete'), \Net\Gearman\Worker::JOB_COMPLETE);
+		$thisWorker->attachCallback(array($this, 'job_fail'), \Net\Gearman\Worker::JOB_FAIL);
 
 		$this->start_time = time();
 		$this->job_execution_count++;
