@@ -25,65 +25,43 @@ declare(ticks = 1);
  */
 //define("NET_GEARMAN_JOB_CLASS_PREFIX", "");
 
-require dirname(__FILE__) . "/GearmanManager.php";
-
 /**
  * Implements the worker portions of the PEAR Net_Gearman library
  */
-class GearmanPearManager extends GearmanManager {
+class ComposerManager extends GearmanManager {
 
 	public static $LOG = array();
 
 	private $start_time;
 
-	/**
-	 * Starts a worker for the PEAR library
-	 *
-	 * @param   array $worker_list List of worker functions to add
-	 * @param   array $timeouts list of worker timeouts to pass to server
-	 * @return  void
-	 *
-	 */
 	protected function start_lib_worker($worker_list, $timeouts = array()) {
 
-		/**
-		 * Require PEAR Net_Gearman libs
-		 */
-		define('NET_GEARMAN_JOB_PATH', $this->worker_dir);
+		$thisWorker = new \Net\Gearman\Worker();
 
-		if (!class_exists("Net_Gearman_Job_Common")) {
-			require "Net/Gearman/Job/Common.php";
+		foreach($this->servers as $s){
+			$this->log("Adding server $s", GearmanManager::LOG_LEVEL_WORKER_INFO);
+			$thisWorker->addServers($s);
 		}
 
-		if (!class_exists("Net_Gearman_Job")) {
-			require "Net/Gearman/Job.php";
-		}
-
-		if (!class_exists("Net_Gearman_Worker")) {
-			require "Net/Gearman/Worker.php";
-		}
-
-		$worker = new Net_Gearman_Worker($this->servers);
-
-		foreach ($worker_list as $w) {
+		foreach($worker_list as $w){
 			$timeout = (isset($timeouts[$w]) ? $timeouts[$w] : null);
-			$message = "Adding job $w";
-			if ($timeout) {
-				$message .= "; timeout: $timeout";
-			}
-			$this->log($message, GearmanManager::LOG_LEVEL_WORKER_INFO);
-			$worker->addAbility($w, $timeout);
+			$this->log("Adding job $w ; timeout: " . $timeout, GearmanManager::LOG_LEVEL_WORKER_INFO);
+			$thisWorker->addFunction($w, array($this, "do_job"), $this, $timeout);
 		}
 
-		$worker->attachCallback(array($this, 'job_start'), Net_Gearman_Worker::JOB_START);
-		$worker->attachCallback(array($this, 'job_complete'), Net_Gearman_Worker::JOB_COMPLETE);
-		$worker->attachCallback(array($this, 'job_fail'), Net_Gearman_Worker::JOB_FAIL);
+		$start = time();
+
+		$thisWorker->attachCallback(array($this, 'job_start'), Net_Gearman_Worker::JOB_START);
+		$thisWorker->attachCallback(array($this, 'job_complete'), Net_Gearman_Worker::JOB_COMPLETE);
+		$thisWorker->attachCallback(array($this, 'job_fail'), Net_Gearman_Worker::JOB_FAIL);
 
 		$this->start_time = time();
 		$this->job_execution_count++;
 
-		$worker->beginWork(array($this, "monitor"));
+		$thisWorker->work(array($this, "monitor"));
+		$thisWorker->unregisterAll();
 	}
+
 
 	/**
 	 * Monitor call back for worker. Return false to stop worker
@@ -194,42 +172,23 @@ class GearmanPearManager extends GearmanManager {
 		}
 	}
 
-
 	/**
 	 * Validates the PECL compatible worker files/functions
 	 */
 	protected function validate_lib_workers() {
 
-		/**
-		 * Yes, we include these twice because this function is called
-		 * by a different process than the other location where these
-		 * are included.
-		 */
-		if (!class_exists("Net_Gearman_Job_Common")) {
-			require "Net/Gearman/Job/Common.php";
-		}
-
-		if (!class_exists("Net_Gearman_Job")) {
-			require "Net/Gearman/Job.php";
-		}
-
-		/**
-		 * Validate functions
-		 */
-		foreach ($this->functions as $name => $func) {
-			$class = NET_GEARMAN_JOB_CLASS_PREFIX . $name;
-			if (!class_exists($class)) {
-				include $func['path'];
-			}
-			if (!class_exists($class) && !method_exists($class, "run")) {
-				$this->log("Class $class not found in {$func['path']} or run method not present");
+		foreach($this->functions as $func => $props){
+			require_once $props["path"];
+			$real_func = $this->prefix.$func;
+			if(!function_exists($real_func) &&
+				(!class_exists($real_func) || !method_exists($real_func, "run"))){
+				$this->log("Function $real_func not found in ".$props["path"]);
 				posix_kill($this->pid, SIGUSR2);
 				exit();
 			}
 		}
+
 	}
 }
 
-$mgr = new GearmanPearManager();
-
-?>
+$mgr = new ComposerManager();
