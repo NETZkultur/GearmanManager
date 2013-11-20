@@ -12,8 +12,6 @@
     },
     "bin": ["pear-manager.php", "pecl-manager.php", "install/install.sh","install/deb.sh","install/rhel.sh"],
     "autoload": {
-        "psr-0": {
-            "": "./"
-        }
+        "files": ["GearmanManager.php"]
     }
 }
