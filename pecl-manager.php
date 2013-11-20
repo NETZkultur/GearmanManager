@@ -1,6 +1,13 @@
 #!/usr/bin/env php
 <?php
 
+if (file_exists('/../vendor/autoload.php')) {
+	require __DIR__ . '/../vendor/autoload.php';
+}
+if (file_exists('/../autoload.php')) {
+	require __DIR__ . '/../autoload.php';
+}
+
 /**
  * Implements the worker portions of the pecl/gearman library
  *
