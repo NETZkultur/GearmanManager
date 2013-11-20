@@ -24,8 +24,6 @@ declare(ticks = 1);
  */
 //define("NET_GEARMAN_JOB_CLASS_PREFIX", "");
 
-require dirname(__FILE__) . "/GearmanManager.php";
-
 /**
  * Implements the worker portions of the PEAR Net_Gearman library
  */

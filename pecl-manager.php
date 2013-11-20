@@ -19,8 +19,6 @@ if (file_exists('/../autoload.php')) {
 
 declare(ticks = 1);
 
-require dirname(__FILE__)."/GearmanManager.php";
-
 /**
  * Implements the worker portions of the pecl/gearman library
  */
