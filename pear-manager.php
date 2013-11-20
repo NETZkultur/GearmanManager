@@ -49,18 +49,6 @@ class GearmanPearManager extends GearmanManager {
 		 */
 		define('NET_GEARMAN_JOB_PATH', $this->worker_dir);
 
-		if (!class_exists("Net_Gearman_Job_Common")) {
-			require "Net/Gearman/Job/Common.php";
-		}
-
-		if (!class_exists("Net_Gearman_Job")) {
-			require "Net/Gearman/Job.php";
-		}
-
-		if (!class_exists("Net_Gearman_Worker")) {
-			require "Net/Gearman/Worker.php";
-		}
-
 		$worker = new Net_Gearman_Worker($this->servers);
 
 		foreach ($worker_list as $w) {

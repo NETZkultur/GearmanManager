@@ -8,7 +8,7 @@
         }
     ],
     "require": {
-        "pilotftzi/net-gearman": "dev-master"
+        "publero/net_gearman": "1.0.x-dev"
     },
     "bin": ["pear-manager.php", "pecl-manager.php", "install/install.sh","install/deb.sh","install/rhel.sh"],
     "autoload": {
