@@ -2,43 +2,39 @@
 
 class Avg {
 
-    private $cache = array();
+	private $cache = array();
 
-    private $foo = 0;
+	private $foo = 0;
 
-    public function run($job, &$log) {
+	public function run($job, &$log) {
 
-        $workload = $job->workload();
+		$workload = $job->workload();
 
-        if(empty($this->cache[$workload])){
+		if (empty($this->cache[$workload])) {
 
-            $dat = json_decode($workload, true);
+			$dat = json_decode($workload, true);
 
-            $sum = 0;
+			$sum = 0;
 
-            foreach($dat as $d){
-                $sum+=$d;
-                sleep(1);
-            }
+			foreach ($dat as $d) {
+				$sum += $d;
+				sleep(1);
+			}
 
-            $avg = $sum / count($dat);
+			$avg = $sum / count($dat);
 
-            $this->cache[$workload] = $avg + 0;
+			$this->cache[$workload] = $avg + 0;
+		} else {
 
-        } else {
+			$avg = $this->cache[$workload] + 0;
+		}
 
-            $avg = $this->cache[$workload] + 0;
+		$log[] = "Answer: " . $avg;
 
-        }
+		$this->foo = 1;
 
-        $log[] = "Answer: ".$avg;
-
-        $this->foo = 1;
-
-        return $avg;
-
-    }
-
+		return $avg;
+	}
 }
 
 ?>

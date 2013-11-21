@@ -2,41 +2,37 @@
 
 class Sum {
 
-    private $cache = array();
+	private $cache = array();
 
-    private $foo = 0;
+	private $foo = 0;
 
-    public function run($job, &$log) {
+	public function run($job, &$log) {
 
-        $workload = $job->workload();
+		$workload = $job->workload();
 
-        if(empty($this->cache[$workload])){
+		if (empty($this->cache[$workload])) {
 
-            $dat = json_decode($workload, true);
+			$dat = json_decode($workload, true);
 
-            $sum = 0;
+			$sum = 0;
 
-            foreach($dat as $d){
-                $sum+=$d;
-                sleep(1);
-            }
+			foreach ($dat as $d) {
+				$sum += $d;
+				sleep(1);
+			}
 
-            $this->cache[$workload] = $sum + 0;
+			$this->cache[$workload] = $sum + 0;
+		} else {
 
-        } else {
+			$sum = $this->cache[$workload] + 0;
+		}
 
-            $sum = $this->cache[$workload] + 0;
+		$log[] = "Answer: " . $sum;
 
-        }
+		$this->foo = 1;
 
-        $log[] = "Answer: ".$sum;
-
-        $this->foo = 1;
-
-        return $sum;
-
-    }
-
+		return $sum;
+	}
 }
 
 ?>

@@ -17,7 +17,7 @@
     "require": {
         "netzkultur/net_gearman": "dev-master"
     },
-    "bin": ["pear-manager.php", "pecl-manager.php", "composer-manager.php", "install/install.sh","install/deb.sh","install/rhel.sh"],
+    "bin": ["pear-manager.php", "pecl-manager.php", "composer-manager.php", "install/install.sh", "install/deb.sh", "install/rhel.sh"],
     "autoload": {
         "files": ["GearmanManager.php"]
     }

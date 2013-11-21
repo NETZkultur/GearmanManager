@@ -53,7 +53,7 @@ class ComposerManager extends GearmanManager {
 			$thisWorker->addFunction($w, function ($workload) use ($w) {
 				static $objects;
 
-				if($objects===null) $objects = array();
+				if ($objects === null) $objects = array();
 
 				$job_name = $w;
 

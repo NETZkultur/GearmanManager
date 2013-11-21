@@ -4,15 +4,15 @@
 
 $gearman_config = array(
 
-    "workers" => array(
+	"workers" => array(
 
-        "reverse_string" => array(
+		"reverse_string" => array(
 
-            "count" => 3
+			"count" => 3
 
-        ),
+		),
 
-    ),
+	),
 
 );
 
