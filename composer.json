@@ -7,8 +7,15 @@
             "email": "mulholland@netzkultur.de"
         }
     ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/NETZkultur/net_gearman.git",
+            "branch": "master"
+        }
+    ],
     "require": {
-        "publero/net_gearman": "1.0.x-dev"
+        "netzkultur/net_gearman": "dev-master"
     },
     "bin": ["pear-manager.php", "pecl-manager.php", "composer-manager.php", "install/install.sh","install/deb.sh","install/rhel.sh"],
     "autoload": {

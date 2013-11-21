@@ -38,18 +38,114 @@ class ComposerManager extends GearmanManager {
 
 		$thisWorker = new \Net\Gearman\Worker();
 
-		foreach($this->servers as $s){
+		foreach ($this->servers as $s) {
 			$this->log("Adding server $s", GearmanManager::LOG_LEVEL_WORKER_INFO);
 			$thisWorker->addServers($s);
 		}
 
-		foreach($worker_list as $w){
+		foreach ($worker_list as $w) {
 			$timeout = (isset($timeouts[$w]) ? $timeouts[$w] : null);
-			$this->log("Adding job $w ; timeout: " . $timeout, GearmanManager::LOG_LEVEL_WORKER_INFO);
-			$thisWorker->addFunction($w, array($this, "do_job"), $this, $timeout);
-		}
+			$message = "Adding job $w";
+			if ($timeout) {
+				$message .= "; timeout: $timeout";
+			}
+			$this->log($message, GearmanManager::LOG_LEVEL_WORKER_INFO);
+			$thisWorker->addFunction($w, function ($workload) use ($w) {
+				static $objects;
 
-		$start = time();
+				if($objects===null) $objects = array();
+
+				$job_name = $w;
+
+				if ($this->prefix) {
+					$func = $this->prefix . $job_name;
+				} else {
+					$func = $job_name;
+				}
+
+				if (empty($objects[$job_name]) && !function_exists($func) && !class_exists($func, false)) {
+
+					if (!isset($this->functions[$job_name])) {
+						$this->log("Function $func is not a registered job name");
+
+						return;
+					}
+
+					require_once $this->functions[$job_name]["path"];
+
+					if (class_exists($func) && method_exists($func, "run")) {
+
+						$this->log("Creating a $func object", GearmanManager::LOG_LEVEL_WORKER_INFO);
+						$objects[$job_name] = new $func();
+					} elseif (!function_exists($func)) {
+
+						$this->log("Function $func not found");
+
+						return;
+					}
+				}
+
+				$this->log(" Starting Job: $job_name", GearmanManager::LOG_LEVEL_WORKER_INFO);
+
+				$this->log(" Workload: $w", GearmanManager::LOG_LEVEL_DEBUG);
+
+				$log = array();
+
+				$this->log(" workload object for $workload", GearmanManager::LOG_LEVEL_DEBUG);
+
+				/**
+				 * Run the real function here
+				 */
+				if (isset($objects[$job_name])) {
+					$this->log(" Calling object for $job_name.", GearmanManager::LOG_LEVEL_DEBUG);
+					$result = $objects[$job_name]->run($workload, $log);
+				} elseif (function_exists($func)) {
+					$this->log(" Calling function for $job_name.", GearmanManager::LOG_LEVEL_DEBUG);
+					$result = $func($workload, $log);
+				} else {
+					$this->log(" FAILED to find a function or class for $job_name.", GearmanManager::LOG_LEVEL_INFO);
+				}
+
+				if (!empty($log)) {
+					foreach ($log as $l) {
+
+						if (!is_scalar($l)) {
+							$l = explode("\n", trim(print_r($l, true)));
+						} elseif (strlen($l) > 256) {
+							$l = substr($l, 0, 256) . "...(truncated)";
+						}
+
+						if (is_array($l)) {
+							foreach ($l as $ln) {
+								$this->log(" $ln", GearmanManager::LOG_LEVEL_WORKER_INFO);
+							}
+						} else {
+							$this->log(" $l", GearmanManager::LOG_LEVEL_WORKER_INFO);
+						}
+					}
+				}
+
+				$result_log = $result;
+
+				if (!is_scalar($result_log)) {
+					$result_log = explode("\n", trim(print_r($result_log, true)));
+				} elseif (strlen($result_log) > 256) {
+					$result_log = substr($result_log, 0, 256) . "...(truncated)";
+				}
+
+				if (is_array($result_log)) {
+					foreach ($result_log as $ln) {
+						$this->log("$ln", GearmanManager::LOG_LEVEL_DEBUG);
+					}
+				} else {
+					$this->log("$result_log", GearmanManager::LOG_LEVEL_DEBUG);
+				}
+
+				$this->job_execution_count++;
+
+				return $result;
+			}, $timeout);
+		}
 
 		$thisWorker->attachCallback(array($this, 'job_start'), \Net\Gearman\Worker::JOB_START);
 		$thisWorker->attachCallback(array($this, 'job_complete'), \Net\Gearman\Worker::JOB_COMPLETE);
@@ -61,7 +157,6 @@ class ComposerManager extends GearmanManager {
 		$thisWorker->work(array($this, "monitor"));
 		$thisWorker->unregisterAll();
 	}
-
 
 	/**
 	 * Monitor call back for worker. Return false to stop worker
@@ -177,17 +272,17 @@ class ComposerManager extends GearmanManager {
 	 */
 	protected function validate_lib_workers() {
 
-		foreach($this->functions as $func => $props){
+		foreach ($this->functions as $func => $props) {
 			require_once $props["path"];
-			$real_func = $this->prefix.$func;
-			if(!function_exists($real_func) &&
-				(!class_exists($real_func) || !method_exists($real_func, "run"))){
-				$this->log("Function $real_func not found in ".$props["path"]);
+			$real_func = $this->prefix . $func;
+			if (!function_exists($real_func) &&
+				(!class_exists($real_func) || !method_exists($real_func, "run"))
+			) {
+				$this->log("Function $real_func not found in " . $props["path"]);
 				posix_kill($this->pid, SIGUSR2);
 				exit();
 			}
 		}
-
 	}
 }
 
