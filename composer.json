@@ -12,6 +12,22 @@
             "type": "git",
             "url": "https://github.com/NETZkultur/net_gearman.git",
             "branch": "master"
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "pda/flexihash",
+                "version": "1.0",
+                "dist": {
+                    "url": "https://github.com/pda/flexihash/archive/master.zip",
+                    "type": "zip"
+                },
+                "source": {
+                    "url": "https://github.com/pda/flexihash.git",
+                    "type": "git",
+                    "reference": "master"
+                }
+            }
         }
     ],
     "require": {
