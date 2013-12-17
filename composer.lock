@@ -1,0 +1,112 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "fed1dbef88130c4666d3972cde0d06b1",
+    "packages": [
+        {
+            "name": "netzkultur/flexihash",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/NETZkultur/flexihash.git",
+                "reference": "5c90297ff7b5c432b1cf33f418edae0b36f8030e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NETZkultur/flexihash/zipball/5c90297ff7b5c432b1cf33f418edae0b36f8030e",
+                "reference": "5c90297ff7b5c432b1cf33f418edae0b36f8030e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Flexihash": "src/"
+                }
+            },
+            "notification-url": "http://satis.netzkultur.local/downloads/",
+            "time": "2013-11-25 12:23:39"
+        },
+        {
+            "name": "netzkultur/net_gearman",
+            "version": "0.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/NETZkultur/net_gearman.git",
+                "reference": "6244f7d64205b7126525983186ab12d3a508eb1b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NETZkultur/net_gearman/zipball/6244f7d64205b7126525983186ab12d3a508eb1b",
+                "reference": "6244f7d64205b7126525983186ab12d3a508eb1b",
+                "shasum": ""
+            },
+            "require": {
+                "netzkultur/flexihash": "0.1",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Net\\Gearman\\": "lib/"
+                }
+            },
+            "notification-url": "http://satis.netzkultur.local/downloads/",
+            "license": [
+                "New BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Till Klampaeckel",
+                    "homepage": "http://pear.php.net/user/till"
+                },
+                {
+                    "name": "Brian L. Moon",
+                    "homepage": "http://pear.php.net/user/brianlmoon"
+                },
+                {
+                    "name": "Joe Stump",
+                    "homepage": "http://pear.php.net/user/jstump"
+                },
+                {
+                    "name": "Chris Goffinet",
+                    "homepage": "http://pear.php.net/user/lenn0x"
+                },
+                {
+                    "name": "Martin Hlavac",
+                    "homepage": "http://www.mhlavac.net"
+                }
+            ],
+            "description": "Gearman (http://www.danga.com/gearman) is a system to farm out work to other machines. It can load balance function calls to lots of machines and allows you to call functions between languages. It can also run all function calls in parallel.",
+            "time": "2013-12-16 09:06:45"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ],
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}
