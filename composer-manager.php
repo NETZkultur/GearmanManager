@@ -287,3 +287,4 @@ class ComposerManager extends GearmanManager {
 }
 
 $mgr = new ComposerManager();
+$mgr->run();
