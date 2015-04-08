@@ -1,3 +1,4 @@
+{
     "name": "netzkultur/gearmanmanager",
     "description": "PHP daemon for managing gearman workers",
     "keywords": ["gearman","net_gearman","gearman-manager"],
